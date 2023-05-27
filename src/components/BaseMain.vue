@@ -1,17 +1,75 @@
 <script>
 import { store } from '../data/store';
+import axios from 'axios';
+
 export default {
     name: 'BaseMain',
-        
-    props: ["negozio"]
-    ,
+
     data() {
         return {
-            store
+            store,
+            carte: null,
+            // opzioniSelezionabili: [
+            //     "Effect Monster",
+            //     "Flip Effect Monster",
+            //     "Flip Tuner Effect Monster",
+            //     "Gemini Monster",
+            //     "Normal Monster",
+            //     "Normal Tuner Monster",
+            //     "Pendulum Effect Monster",
+            //     "Pendulum Effect Ritual Monster",
+            //     "Pendulum Flip Effect Monster",
+            //     "Pendulum Normal Monster",
+            //     "Pendulum Tuner Effect Monster",
+            //     "Ritual Effect Monster",
+            //     "Ritual Monster",
+            //     "Spell Card",
+            //     "Spirit Monster",
+            //     "Toon Monster",
+            //     "Trap Card",
+            //     "Tuner Monster",
+            //     "Union Effect Monster",
+            // ],
+        }
+    },
+    methods: {
+        recuperaNuoviDati() {
+            console.log(this.carte);
+
+            // let indirizzo = this.store.apiUrl;
+
+            let indirizzo = this.store.apiUrl + "&archetype=" + this.carte;
+
+            console.log(indirizzo);
+
+            this.getCards(indirizzo);
+
+        },
+        getCards(indirizzo) {
+
+            this.store.loading = true
+
+            axios.get(indirizzo).then(result => {
+                console.log("risultato:", result);
+                this.store.carte = result.data.data;
+                this.store.loading = false;
+            });
         }
     },
     mounted() {
-        // console.log("ooooo",this.store.carte)
+
+    
+
+    // console.log("Store:",this.store)
+
+    axios.get(this.store.selectUrl).then(result => {
+        this.store.archetipi = result.data
+        console.log("archetipi:", this.store.archetipi)
+    });
+
+    },
+    computed: {
+        
     }
 }
 </script>
@@ -19,8 +77,22 @@ export default {
 <template>
 
 <main>
-    <div v-if="store.loading == false" class="container my_bg mt-5">
-        <div class="row p-3">
+
+
+    <!-- <div class="container">
+        <button @click="getType">DEBUG</button>
+    </div> -->
+    <div class="container p-0 mt-4">
+        <select @change="recuperaNuoviDati()" v-model="carte">
+            <option v-for="opzioni in this.store.archetipi" >{{ opzioni.archetype_name }}</option>
+        </select>
+    </div>
+
+    <div v-if="store.loading == false" class="container p-0 mt-5">
+
+
+
+        <div class="row p-3 my_bg">
             <div v-for="mostri in store.carte" class="my_card mb-3">
                 <img :src="mostri.card_images[0].image_url" alt="">
                 <p class="text-light">{{mostri.name}}</p>

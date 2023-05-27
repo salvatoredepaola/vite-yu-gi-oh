@@ -4,7 +4,6 @@ import BaseMain from './components/BaseMain.vue';
 import BaseFooter from './components/BaseFooter.vue';
 
 import { store } from './data/store';
-import axios from 'axios';
 
 export default {
   name: 'App',
@@ -18,15 +17,7 @@ export default {
       store,
     }
   },
-  mounted() {
-    axios.get("https://db.ygoprodeck.com/api/v7/cardinfo.php?num=20&offset=0").then(result => {
-      console.log("risultato:", result.data.data);
-      this.store.carte = result.data.data;
-      this.store.loading = false;
-    });
-
-    console.log("Store:",this.store)
-  }
+  
 }
 </script>
 
